@@ -1,0 +1,5 @@
+{
+    "es6-css-minify.cssMinPath": "dist",
+    "es6-css-minify.jsMinPath": "dist",
+    "es6-css-minify.minifyOnSave": "yes"
+}
