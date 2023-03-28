@@ -30,8 +30,8 @@ document.querySelectorAll('.image-compare').forEach(el => {
     el.afterLabel = document.createElement('span');
     el.beforeLabel.classList.add('image-compare-label');
     el.afterLabel.classList.add('image-compare-label');
-    el.beforeLabel.innerHTML = 'Antes';
-    el.afterLabel.innerHTML = 'Depois';
+    el.beforeLabel.innerHTML = el.getAttribute('data-before-label') || 'Before';
+    el.afterLabel.innerHTML = el.getAttribute('data-after-label') || 'After';
     el.beforeImg.appendChild(el.beforeLabel);
     el.afterImg.appendChild(el.afterLabel);
 
@@ -45,6 +45,19 @@ document.querySelectorAll('.image-compare').forEach(el => {
         if(el.isDragging) {
             let rect = el.getBoundingClientRect();
             let x = e.clientX - (rect.left * el.zoomProp);
+            x = x / el.zoomProp;
+            if(x >= 0 && x <= el.clientWidth) {
+                el.handle.style.left = x + 'px';
+                el.beforeImg.style.width = x + 'px';
+            }
+        }
+    });
+
+    // Add wrapper touchmove event (mobile only)
+    el.addEventListener('touchmove', e => {
+        if(e.changedTouches[0]) {
+            let rect = el.getBoundingClientRect();
+            let x = e.changedTouches[0].clientX - (rect.left * el.zoomProp);
             x = x / el.zoomProp;
             if(x >= 0 && x <= el.clientWidth) {
                 el.handle.style.left = x + 'px';
