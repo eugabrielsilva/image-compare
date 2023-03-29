@@ -15,7 +15,7 @@ document.querySelectorAll('.image-compare').forEach(el => {
 
     // Get zoom property
     el.zoomProp = document.querySelector('body').style.zoom;
-    if(!el.zoomProp || el.zoomProp === 'unset') el.zoomProp = 1;
+    if(!el.zoomProp || !el.zoomProp.length || el.zoomProp === 'unset') el.zoomProp = 1;
 
     // Set initial size
     el.beforeImg.querySelector('img').style.width = el.clientWidth + 'px';
@@ -40,6 +40,11 @@ document.querySelectorAll('.image-compare').forEach(el => {
         el.isDragging = true;
     });
 
+    // Add handle touchstart event
+    el.handle.addEventListener('touchstart', () => {
+        el.isDragging = true;
+    });
+
     // Add wrapper mousemove event
     el.addEventListener('mousemove', e => {
         if(el.isDragging) {
@@ -55,7 +60,7 @@ document.querySelectorAll('.image-compare').forEach(el => {
 
     // Add wrapper touchmove event (mobile only)
     el.addEventListener('touchmove', e => {
-        if(e.changedTouches[0]) {
+        if(el.isDragging && e.changedTouches[0]) {
             let rect = el.getBoundingClientRect();
             let x = e.changedTouches[0].clientX - (rect.left * el.zoomProp);
             x = x / el.zoomProp;
@@ -71,11 +76,21 @@ document.querySelectorAll('.image-compare').forEach(el => {
         el.isDragging = false;
     });
 
+    // Add window touchend event
+    window.addEventListener('touchend', () => {
+        el.isDragging = false;
+    });
+
+    // Add window touchcancel event
+    window.addEventListener('touchcancel', () => {
+        el.isDragging = false;
+    });
+
     // Add wrapper resize event
     window.addEventListener('resize', () => {
         // Get zoom property again
         el.zoomProp = document.querySelector('body').style.zoom;
-        if(!el.zoomProp || el.zoomProp === 'unset') el.zoomProp = 1;
+        if(!el.zoomProp || !el.zoomProp.length || el.zoomProp === 'unset') el.zoomProp = 1;
 
         // Parse initial size again
         el.beforeImg.querySelector('img').style.width = el.clientWidth + 'px';
